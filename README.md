@@ -11,6 +11,7 @@ Files:
 
 # How To Deploy
 Use AWS CloudFormation to deploy the following template:
+
 https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
 
 Parameters:
@@ -28,4 +29,4 @@ Parameters:
 
 >History, specify how many old AMIs do you want to keep (the Lmabda will remove only the AMIs it created)
 
-*If you edit the teamplate remember to use LF end of lines
+*If you edit the template remember to use LF end of lines

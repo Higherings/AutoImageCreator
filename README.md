@@ -31,7 +31,10 @@ https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
 
 - *History*, specify how many old AMIs do you want to keep (the Lmabda will remove only the AMIs it created)
 
-`If you edit the template remember to use LF end of lines`
+`If you edit the template remember to use LF end of lines.`
+`Update KMS user policy to include Lambda Role if using KMS encrypted EBSs.`
 
 ## To-Do
 - Make a more restrict policy for the Lambda so it can only create AMIs and nothing more
+
+- Clean snapshots of de-registered AMIs

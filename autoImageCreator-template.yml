@@ -27,19 +27,19 @@ Metadata: #Seccion Opcional
           - pHistorico
     ParameterLabels: #Define Friendly Names para los Parametros mostrados en la pantalla
       TemplateAmbiente:
-        default: "Valor para tag Env"
+        default: "Env Tag"
       pFrecuencia:
-        default: "Indique cada # de dias que se creara una Imagen"
+        default: "Frequency, specify how often the AMIs will be created (# days)"
       pHora:
-        default: "Indique la hora ##:## en formato 24 horas UTC cuando se creara la Imagen"
+        default: "Time, specify at what time (UTC) the AMIs will be created, 24 hours format (##:##)"
       pHistorico:
-        default: "Indique el # de Imagenes a conservar en historico"
+        default: "History, specify how many old AMIs do you want to keep in history (only the AMIs created with this tool will be deleted)"
       pTagBusqueda:
-        default: "Indique el Tag a utilizar para seleccionar las Instancias a las cuales se les creara Imagen"
+        default: "Selection Tag, sets the Tag used to identified Instances of which AMIs will be created"
       pTagValor:
-        default: "Indique el Valor del Tag a utilizar para seleccionar las Instancias a las cuales se les creara Imagen"
+        default: "Selection Tag Value, sets the Value of the Tag to identified instances"
       pReboot:
-        default: "Indique 1 para hacer Reboot antes de crear Imagen, 0 para no hacer Reboot de la Instancia"
+        default: "Reboot, set it 1 to Reboot when creating the AMI, or 0 to not Reboot"
 
 Parameters: #Definicion de Parametros con Valores Default
   TemplateAmbiente:

@@ -39,7 +39,7 @@ Metadata: #Seccion Opcional
       pTagValor:
         default: "Selection Tag Value, sets the Value of the Tag to identified instances"
       pReboot:
-        default: "Reboot, set it 1 to Reboot when creating the AMI, or 0 to not Reboot"
+        default: "Reboot, set it 1 to Reboot when creating the AMI, or 0 to not Reboot the instances"
 
 Parameters: #Definicion de Parametros con Valores Default
   TemplateAmbiente:

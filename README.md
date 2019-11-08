@@ -30,3 +30,7 @@ Parameters:
 >History, specify how many old AMIs do you want to keep (the Lmabda will remove only the AMIs it created)
 
 *If you edit the template remember to use LF end of lines
+
+# To-Do
+> Make a more restrict policy for the Lambda so it can only create AMIs and nothing more
+> Verify the funcionality with and Instance with several EBS attached

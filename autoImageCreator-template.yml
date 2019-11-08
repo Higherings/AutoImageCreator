@@ -1,0 +1,187 @@
+# igarcia 2019-10
+# Version: 2.1
+# Crea Lambda programa con CloudWatch Event para creacion automatica de Imagenes de Instancias
+
+AWSTemplateFormatVersion: 2010-09-09
+Description: Plantilla para Crear Automatizacion de Imagenes (AMIs)
+
+Metadata: #Seccion Opcional
+  AWS::CloudFormation::Interface: #Permite la personalizacion de los Parametros
+    ParameterGroups: #Define Secciones y orden de los Parametros
+      -
+        Label:
+          default: "Stack Environment"
+        Parameters:
+          - TemplateAmbiente
+          - TipoAmbiente
+          - AmbienteDBseparado
+      -
+        Label:
+          default: "Image Creation Setup"
+        Parameters:
+          - pTagBusqueda
+          - pTagValor
+          - pReboot
+          - pFrecuencia
+          - pHora
+          - pHistorico
+    ParameterLabels: #Define Friendly Names para los Parametros mostrados en la pantalla
+      TemplateAmbiente:
+        default: "Valor para tag Env"
+      pFrecuencia:
+        default: "Indique cada # de dias que se creara una Imagen"
+      pHora:
+        default: "Indique la hora ##:## en formato 24 horas UTC cuando se creara la Imagen"
+      pHistorico:
+        default: "Indique el # de Imagenes a conservar en historico"
+      pTagBusqueda:
+        default: "Indique el Tag a utilizar para seleccionar las Instancias a las cuales se les creara Imagen"
+      pTagValor:
+        default: "Indique el Valor del Tag a utilizar para seleccionar las Instancias a las cuales se les creara Imagen"
+      pReboot:
+        default: "Indique 1 para hacer Reboot antes de crear Imagen, 0 para no hacer Reboot de la Instancia"
+
+Parameters: #Definicion de Parametros con Valores Default
+  TemplateAmbiente:
+    Type: String
+    Description: "Tag Env para los Recursos de CloudFormation"
+    Default: Test
+    MaxLength: 10
+    MinLength: 3
+    ConstraintDescription: "Por favor indique un Tag sencillo"
+  pFrecuencia:
+    Type: Number
+    Description: "Indica cada cuantos dias se genera una nueva Imagen"
+    Default: 31
+    MinValue: 1
+    MaxValue: 31
+  pHora:
+    Type: String
+    Description: "Indica la hora UTC en formato 24 horas para generar una nueva Imagen"
+    Default: "6:01"
+    AllowedPattern: "^[0-2]?[0-9]:[0-5][0-9]$"
+    ConstraintDescription: "Por favor indique una hora entre 0:00 a 23:59"
+  pHistorico:
+    Type: Number
+    Description: "Indica cuantas Imagenes se desean archivar"
+    Default: 1
+    MinValue: 1
+    ConstraintDescription: "Por favor indique un numero entre 1 y 365"
+  pTagBusqueda:
+    Type: String
+    Description: "Tag que identifica a las Instancias para generar Imagenes"
+    Default: Env
+    MaxLength: 20
+    MinLength: 1
+    ConstraintDescription: "Por favor indique un Tag sencillo"
+  pTagValor:
+    Type: String
+    Description: "Valor del Tag que identifica a las Instancias para generar Imagenes"
+    Default: Prod
+    MaxLength: 20
+    MinLength: 1
+    ConstraintDescription: "Por favor indique un Valor sencillo"
+  pReboot:
+    Type: Number
+    Description: "Variable que indica si se debe hacer Reboot o no de la Instancia al crear la Imagen"
+    AllowedValues: [0,1]
+    Default: 0
+
+Resources: #Definicion de los Recursos a Crear
+  TemplateRole: #Rol para ejecucion de Lambda
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Description: Role para ejecucion de AutoImageCreator
+      Policies: 
+        -
+          PolicyName: !Join [ "-", [ "PolicyLambdaExec", !Ref TemplateAmbiente ] ]
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+        -
+          PolicyName: !Join [ "-", [ "PolicyLambdaEC2", !Ref TemplateAmbiente ] ]
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: "ec2:*"
+                Resource: "*"
+      RoleName: !Join [ "-", [ "RoleforAutoImageCreator", !Ref TemplateAmbiente ] ]
+      Tags:
+        - Key: Env
+          Value: !Ref TemplateAmbiente
+
+  TemplateLambda:  #Lambda que genera las Imagenes
+    Type: AWS::Lambda::Function
+    DependsOn: TemplateRole
+    Properties:
+      Code:
+        S3Bucket: higher-artifacts
+        S3Key: "autoimagecreator.zip"
+      Description: Genera Imagenes de EC2 Instances cada cierto tiempo
+      Environment:
+        Variables:
+          FRECUENCIA: !Ref pFrecuencia
+          HISTORICO: !Ref pHistorico
+          TAGBUSQUEDA: !Ref pTagBusqueda
+          TAGVALOR: !Ref pTagValor
+          AMBIENTE: !Ref TemplateAmbiente
+          OPREBOOT: !Ref pReboot
+      FunctionName: !Join [ "-", [ "AutoImageCreatorLambda", !Ref TemplateAmbiente ] ]
+      Role: !GetAtt TemplateRole.Arn
+      Timeout: 300
+      Handler: autoimagecreator.lambda_handler
+      Runtime: python3.7
+      MemorySize: 256
+      Tags:
+        -
+          Key: Env
+          Value: !Ref TemplateAmbiente
+
+  TemplateEventLambda:  #Crea Event para invocar la Lambda
+    Type: AWS::Events::Rule
+    DependsOn: TemplateLambda
+    Properties:
+      Description: Manda a llamar Lambda de Creacion de Imagenes
+      Name: !Join [ "-", [ "AutoImageCreatorEvent", !Ref TemplateAmbiente ] ]
+      ScheduleExpression: !Join [ "", [ "cron(",!Select [ 1, !Split [ ":", !Ref pHora] ]," ", !Select [ 0, !Split [ ":", !Ref pHora] ], " 1/",!Ref pFrecuencia," * ? *)" ] ]
+      State: ENABLED
+      Targets:
+        -
+          Arn: !GetAtt TemplateLambda.Arn
+          Id: !Join [ "-", [!Ref TemplateAmbiente, "AutoImageCreatorLambda" ] ]
+
+  TemplatePermisoEventLambda: #Relaciona permisos del Event con Lambda
+    Type: AWS::Lambda::Permission
+    DependsOn: TemplateEventLambda
+    Properties:
+      FunctionName: !GetAtt TemplateLambda.Arn
+      Action: "lambda:InvokeFunction"
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt TemplateEventLambda.Arn
+
+Outputs: #Salida a mostrarse en la pantalla
+  CreacionImagen:
+    Description: Frecuencia creacion de imagenes
+    Value: !Join [ "", [ "Cada ", !Ref pFrecuencia, " dias, a las ", !Ref pHora, " UTC" ] ]
+  HistoricoImagen:
+    Description: Imagenes a conservar por Instancia
+    Value: !Ref pHistorico

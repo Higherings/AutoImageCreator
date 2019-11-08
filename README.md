@@ -2,6 +2,8 @@
 Easy to configure AMI generator for EC2 Instances in AWS
 It uses CloudFormation and Lambda
 
+It will create AMIs for EC2 Instances with an specified Tag and Value (they also need to have Tag Name, because it will ignore AutoScaling instances)
+
 ### Files:
 - autoImageCreator-template.yml, CloudFormation template to Run in your account, it is already in a public S3 bucket
 
@@ -33,5 +35,3 @@ https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
 
 ## To-Do
 - Make a more restrict policy for the Lambda so it can only create AMIs and nothing more
-
-- Verify the funcionality with and Instance with several EBS attached

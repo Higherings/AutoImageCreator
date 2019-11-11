@@ -48,8 +48,8 @@ Parameters: #Definicion de Parametros con Valores Default
     Description: "Tag Env para los Recursos de CloudFormation"
     Default: Test
     MaxLength: 10
-    MinLength: 3
-    ConstraintDescription: "Por favor indique un Tag sencillo"
+    MinLength: 2
+    ConstraintDescription: "Por favor indique un Tag sencillo de entre 2 y 10 caracteres"
   pFrecuencia:
     Type: Number
     Description: "Indica cada cuantos dias se genera una nueva Imagen"

@@ -29,9 +29,10 @@ https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
 
 - *Time*, specify at what time the AMIs will be created
 
-- *History*, specify how many old AMIs do you want to keep (the Lmabda will remove only the AMIs it created)
+- *History*, specify how many old AMIs do you want to keep (the Lambda will remove only the AMIs it created)
 
 `If you edit the template remember to use LF end of lines.`
+
 `Update KMS user policy to include Lambda Role if using KMS encrypted EBSs.`
 
 ## To-Do

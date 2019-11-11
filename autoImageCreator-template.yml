@@ -1,6 +1,7 @@
-# igarcia 2019-10
-# Version: 2.1
-# Crea Lambda programa con CloudWatch Event para creacion automatica de Imagenes de Instancias
+# igarcia 2019-11
+# Version: 2.5
+# Crea Lambda programada con CloudWatch Event para creacion automatica de Imagenes de Instancias
+# Recursos creados: Lambdas, CloudWatch Event, DynamoDB table, IAM Rol
 
 AWSTemplateFormatVersion: 2010-09-09
 Description: Plantilla para Crear Automatizacion de Imagenes (AMIs)
@@ -124,6 +125,24 @@ Resources: #Definicion de los Recursos a Crear
                 Effect: "Allow"
                 Action: "ec2:*"
                 Resource: "*"
+        -
+          PolicyName: !Join [ "-", [ "PolicyLambdaDynamoDB", !Ref TemplateAmbiente ] ]
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "dynamodb:BatchWriteItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:Query"
+                  - "dynamodb:UpdateItem"
+                  - "dynamodb:UpdateTable"
+                Resource: !Join [ "" , [ "arn:aws:dynamodb:*:*:table/", !Join [ "-", [ "AutoImageCreatorLambda", !Ref TemplateAmbiente ] ] ] ]
       RoleName: !Join [ "-", [ "RoleforAutoImageCreator", !Ref TemplateAmbiente ] ]
       Tags:
         - Key: Env
@@ -145,6 +164,7 @@ Resources: #Definicion de los Recursos a Crear
           TAGVALOR: !Ref pTagValor
           AMBIENTE: !Ref TemplateAmbiente
           OPREBOOT: !Ref pReboot
+          SNAPTABLE: !Join [ "-", [ "AutoImageCreatorTable", !Ref TemplateAmbiente ] ]
       FunctionName: !Join [ "-", [ "AutoImageCreatorLambda", !Ref TemplateAmbiente ] ]
       Role: !GetAtt TemplateRole.Arn
       Timeout: 300
@@ -177,6 +197,24 @@ Resources: #Definicion de los Recursos a Crear
       Action: "lambda:InvokeFunction"
       Principal: events.amazonaws.com
       SourceArn: !GetAtt TemplateEventLambda.Arn
+
+  TemplateDynamoDBtable:  #Tabla para almacenar snapshots de AMIs a borrar
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: SnapshotID
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        -
+          AttributeName: SnapshotID
+          KeyType: HASH
+      TableName: !Join [ "-", [ "AutoImageCreatorTable", !Ref TemplateAmbiente ] ]
+      Tags:
+        -
+          Key: Env
+          Value: !Ref TemplateAmbiente
 
 Outputs: #Salida a mostrarse en la pantalla
   CreacionImagen:

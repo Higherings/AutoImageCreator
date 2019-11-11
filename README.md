@@ -35,6 +35,6 @@ https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
 `Update KMS user policy to include Lambda Role if using KMS encrypted EBSs.`
 
 ## To-Do
-- Make a more restrict policy for the Lambda so it can only create AMIs and nothing more
+- Make a more restrict EC2 policy for the Lambda so it can only create AMIs and nothing more
 
-- Clean snapshots of de-registered AMIs
+- A better error management

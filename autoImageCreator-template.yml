@@ -142,7 +142,7 @@ Resources: #Definicion de los Recursos a Crear
                   - "dynamodb:Query"
                   - "dynamodb:UpdateItem"
                   - "dynamodb:UpdateTable"
-                Resource: !Join [ "" , [ "arn:aws:dynamodb:*:*:table/", !Join [ "-", [ "AutoImageCreatorLambda", !Ref TemplateAmbiente ] ] ] ]
+                Resource: !Join [ "" , [ "arn:aws:dynamodb:*:*:table/", !Join [ "-", [ "AutoImageCreatorTable", !Ref TemplateAmbiente ] ] ] ]
       RoleName: !Join [ "-", [ "RoleforAutoImageCreator", !Ref TemplateAmbiente ] ]
       Tags:
         - Key: Env

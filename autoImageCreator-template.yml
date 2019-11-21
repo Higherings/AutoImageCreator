@@ -1,5 +1,5 @@
 # igarcia 2019-11
-# Version: 2.5
+# Version: 2.6
 # Crea Lambda programada con CloudWatch Event para creacion automatica de Imagenes de Instancias
 # Recursos creados: Lambdas, CloudWatch Event, DynamoDB table, IAM Rol
 
@@ -143,6 +143,23 @@ Resources: #Definicion de los Recursos a Crear
                   - "dynamodb:UpdateItem"
                   - "dynamodb:UpdateTable"
                 Resource: !Join [ "" , [ "arn:aws:dynamodb:*:*:table/", !Join [ "-", [ "AutoImageCreatorTable", !Ref TemplateAmbiente ] ] ] ]
+        -
+          PolicyName: !Join [ "-", [ "PolicyLambdaKMS", !Ref TemplateAmbiente ] ]
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "kms:Encrypt"
+                  - "kms:Decrypt"
+                  - "kms:ReEncrypt*"
+                  - "kms:GenerateDataKey*"
+                  - "kms:DescribeKey"
+                  - "kms:CreateGrant"
+                  - "kms:ListGrants"
+                  - "kms:RevokeGrant"
+                Resource: "*"
       RoleName: !Join [ "-", [ "RoleforAutoImageCreator", !Ref TemplateAmbiente ] ]
       Tags:
         - Key: Env

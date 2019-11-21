@@ -1,5 +1,5 @@
 # igarcia 2019-11
-# Version 2.5
+# Version 2.6
 # Funcion para generar AMIs de las Instancias con determinado Tag y que tambien tengan definido tag "Name"
 # Elimina las AMIs mas alla del Historico, elimina los Snaphosts de las AMIs desregistradas (-1). Es decir habran Snaphosts Historico+1
 # Da opcion de reiniciar o no Instancia antes de crear Imagen

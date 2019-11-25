@@ -35,7 +35,11 @@ https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
 
 `If you edit the template remember to use LF end of lines.`
 
+<<<<<<< HEAD
 `Update KMS user policy to include Lambda Role if using KMS encrypted EBSs with not default Service Keys.`
+=======
+`If you have problems with Encrypted Instance's EBS, update KMS user policy to include Lambda Role.`
+>>>>>>> d3835eecc9473d4faf0711c3a5e5b55a7a21e070
 
 ## To-Do
 - Make a more restrict EC2 policy for the Lambda so it can only create AMIs and nothing more

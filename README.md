@@ -4,6 +4,8 @@ It uses CloudFormation and Lambda
 
 It will create AMIs for EC2 Instances with an specified Tag and Value (they also need to have Tag Name, because it will ignore AutoScaling instances)
 
+> Version 2.6.1
+
 ### Files:
 - autoImageCreator-template.yml, CloudFormation template to Run in your account, it is already in a public S3 bucket
 
@@ -33,7 +35,7 @@ https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
 
 `If you edit the template remember to use LF end of lines.`
 
-`Update KMS user policy to include Lambda Role if using KMS encrypted EBSs.`
+`Update KMS user policy to include Lambda Role if using KMS encrypted EBSs with not default Service Keys.`
 
 ## To-Do
 - Make a more restrict EC2 policy for the Lambda so it can only create AMIs and nothing more

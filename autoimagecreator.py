@@ -1,5 +1,5 @@
 # igarcia 2019-11
-# Version 2.6
+# Version 2.6.1
 # Funcion para generar AMIs de las Instancias con determinado Tag y que tambien tengan definido tag "Name"
 # Elimina las AMIs mas alla del Historico, elimina los Snaphosts de las AMIs desregistradas (-1). Es decir habran Snaphosts Historico+1
 # Da opcion de reiniciar o no Instancia antes de crear Imagen
@@ -101,7 +101,9 @@ def lambda_handler(event, context):
                 print("Error en Procesado de Instancia: "+iname)
                 errores+=1
 
+    mensaje = 'Ejecucion Completada, Imagenes Creadas: '+str(imagenes)+' con '+str(errores)+' Errores.'
+    print(mensaje)
     return {
         'statusCode': 200,
-        'body': json.dumps('Ejecucion Completada, Imagenes Creadas: '+str(imagenes)+' con '+str(errores)+' Errores.')
+        'body': json.dumps(mensaje)
     }

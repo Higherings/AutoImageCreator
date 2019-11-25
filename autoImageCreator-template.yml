@@ -1,5 +1,5 @@
 # igarcia 2019-11
-# Version: 2.6
+# Version: 2.6.1
 # Crea Lambda programada con CloudWatch Event para creacion automatica de Imagenes de Instancias
 # Recursos creados: Lambdas, CloudWatch Event, DynamoDB table, IAM Rol
 

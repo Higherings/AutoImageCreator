@@ -4,7 +4,9 @@ It uses CloudFormation and Lambda
 
 It will create AMIs for EC2 Instances with an specified Tag and Value (they also need to have Tag Name, because it will ignore AutoScaling instances)
 
-> Version 2.6.1
+If it's now working on your Region create an Issue and I will fix it.
+
+> Version 2.7
 
 ### Files:
 - autoImageCreator-template.yml, CloudFormation template to Run in your account, it is already in a public S3 bucket

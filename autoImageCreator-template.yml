@@ -1,5 +1,5 @@
-# igarcia 2019-11
-# Version: 2.6.1
+# igarcia 2020-04
+# Version: 2.7
 # Crea Lambda programada con CloudWatch Event para creacion automatica de Imagenes de Instancias
 # Recursos creados: Lambdas, CloudWatch Event, DynamoDB table, IAM Rol
 
@@ -14,8 +14,6 @@ Metadata: #Seccion Opcional
           default: "Stack Environment"
         Parameters:
           - TemplateAmbiente
-          - TipoAmbiente
-          - AmbienteDBseparado
       -
         Label:
           default: "Image Creation Setup"
@@ -167,11 +165,10 @@ Resources: #Definicion de los Recursos a Crear
 
   TemplateLambda:  #Lambda que genera las Imagenes
     Type: AWS::Lambda::Function
-    DependsOn: TemplateRole
     Properties:
       Code:
-        S3Bucket: higher-artifacts
-        S3Key: "autoimagecreator.zip"
+        S3Bucket: !Join [ "-", [ "higher-artifacts", !Ref "AWS::Region" ] ]
+        S3Key: "solutions/autoimagecreator.zip"
       Description: Genera Imagenes de EC2 Instances cada cierto tiempo
       Environment:
         Variables:
@@ -195,7 +192,6 @@ Resources: #Definicion de los Recursos a Crear
 
   TemplateEventLambda:  #Crea Event para invocar la Lambda
     Type: AWS::Events::Rule
-    DependsOn: TemplateLambda
     Properties:
       Description: Manda a llamar Lambda de Creacion de Imagenes
       Name: !Join [ "-", [ "AutoImageCreatorEvent", !Ref TemplateAmbiente ] ]
@@ -208,7 +204,6 @@ Resources: #Definicion de los Recursos a Crear
 
   TemplatePermisoEventLambda: #Relaciona permisos del Event con Lambda
     Type: AWS::Lambda::Permission
-    DependsOn: TemplateEventLambda
     Properties:
       FunctionName: !GetAtt TemplateLambda.Arn
       Action: "lambda:InvokeFunction"

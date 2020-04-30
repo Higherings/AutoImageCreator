@@ -1,5 +1,5 @@
 # igarcia 2020-04
-# Version: 2.7
+# Version: 2.7.0
 # Crea Lambda programada con CloudWatch Event para creacion automatica de Imagenes de Instancias
 # Recursos creados: Lambdas, CloudWatch Event, DynamoDB table, IAM Rol
 
@@ -181,9 +181,9 @@ Resources: #Definicion de los Recursos a Crear
           SNAPTABLE: !Join [ "-", [ "AutoImageCreatorTable", !Ref TemplateAmbiente ] ]
       FunctionName: !Join [ "-", [ "AutoImageCreatorLambda", !Ref TemplateAmbiente ] ]
       Role: !GetAtt TemplateRole.Arn
-      Timeout: 300
+      Timeout: 800
       Handler: autoimagecreator.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.8
       MemorySize: 256
       Tags:
         -

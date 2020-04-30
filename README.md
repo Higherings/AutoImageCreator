@@ -1,12 +1,12 @@
 # AutoImageCreator
 Easy to configure AMI generator for EC2 Instances in AWS
-It uses CloudFormation and Lambda
+It uses CloudFormation and Lambda (Python 3.8)
 
 It will create AMIs for EC2 Instances with an specified Tag and Value (they also need to have Tag Name, because it will ignore AutoScaling instances)
 
 If it's now working on your Region create an Issue and I will fix it.
 
-> Version 2.7
+> Version 2.7.0
 
 ### Files:
 - autoImageCreator-template.yml, CloudFormation template to Run in your account, it is already in a public S3 bucket

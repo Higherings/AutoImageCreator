@@ -4,7 +4,7 @@ It uses CloudFormation and Lambda (Python 3.8)
 
 It will create AMIs for EC2 Instances with an specified Tag and Value (they also need to have Tag Name, because it will ignore AutoScaling instances)
 
-If it's now working on your Region create an Issue and I will fix it.
+If it's not working on your Region create an Issue and I will fix it.
 
 > Version 2.7.0
 

@@ -18,7 +18,7 @@ If it's not working on your Region create an Issue and I will fix it.
 ## How To Deploy
 Use AWS CloudFormation to deploy the following template:
 
-https://higher-artifacts.s3.amazonaws.com/autoImageCreator-template.yml
+https://higher-artifacts.s3.amazonaws.com/solutions/autoImageCreator-template.yml
 
 ### Parameters:
 - *Env Tag*, use to identified the component of the template
